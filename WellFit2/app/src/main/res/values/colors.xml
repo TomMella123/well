@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="blue">#0077FF</color>
+    <color name="glucosaHeader">#F39C12</color>
+    <color name="azulPrimario">#1976D2</color> <!-- Azul bonito tipo WellFit -->
+    <color name="azulPrimarioClaro">#2196F3</color> <!-- Por si lo necesitas luego -->
+    <color name="fondoGris">#EEEEEE</color>
+
+
+
+</resources>

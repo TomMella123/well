@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="12dp"
+    app:cardElevation="4dp"
+    app:cardUseCompatPadding="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:clickable="true"
+    android:focusable="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="16dp">
+
+        <!-- Icono: uso ic_ejercicio que ya tienes -->
+        <ImageView
+            android:id="@+id/imgIconoDesafio"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:src="@drawable/ic_ejercicio" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginStart="12dp">
+
+            <TextView
+                android:id="@+id/tvTituloDesafio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Subir masa muscular"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="@android:color/black" />
+
+            <TextView
+                android:id="@+id/tvDescripcionDesafio"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ingerir más proteína"
+                android:textSize="14sp"
+                android:textColor="#666666"
+                android:layout_marginTop="2dp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="8dp">
+
+                <!-- Sin drawableLeft raro: solo texto -->
+                <TextView
+                    android:id="@+id/tvPuntosDesafio"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🏆 100 puntos"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/tvDificultadDesafio"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Avanzado"
+                    android:textSize="13sp"
+                    android:layout_marginStart="16dp" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btnIniciarDesafio"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:text="INICIAR"
+                android:layout_marginTop="10dp"
+                android:backgroundTint="#FFC107"
+                android:textColor="@android:color/white" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

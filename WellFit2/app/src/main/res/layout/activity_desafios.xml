@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@android:color/white">
+
+    <!-- Header amarillo sencillo, usando ic_launcher para evitar drawables nuevos -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="220dp"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="#FFC107"
+        android:padding="24dp">
+
+        <ImageView
+            android:id="@+id/imgHeaderDesafios"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@mipmap/ic_launcher" />
+
+        <TextView
+            android:id="@+id/tvTituloHeaderDesafios"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Desafíos"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:layout_marginTop="16dp" />
+
+        <TextView
+            android:id="@+id/tvSubtituloHeaderDesafios"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Elige y supera desafíos"
+            android:textSize="16sp"
+            android:textColor="@android:color/white"
+            android:layout_marginTop="4dp" />
+    </LinearLayout>
+
+    <!-- Contenido -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/tvDesafiosRecomendados"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Actuales"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+
+        <ProgressBar
+            android:id="@+id/progressDesafios"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvDesafiosEmpty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="No hay desafíos disponibles."
+            android:gravity="center"
+            android:padding="16dp"
+            android:visibility="gone" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvDesafios"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:overScrollMode="never" />
+
+    </LinearLayout>
+
+</LinearLayout>

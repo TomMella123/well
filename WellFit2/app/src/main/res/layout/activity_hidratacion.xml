@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="@drawable/heador_curves"
+        android:backgroundTint="@color/azulPrimario"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!-- CÍRCULO SEGMENTADO -->
+        <ImageView
+            android:id="@+id/circleContainer"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:src="@drawable/segmented_circle"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- TEXTO DE VASOS -->
+        <TextView
+            android:id="@+id/txtVasosActuales"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0/8"
+            android:textStyle="bold"
+            android:textColor="@android:color/white"
+            android:textSize="32sp"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/botones"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="12dp"
+        app:layout_constraintTop_toBottomOf="@id/header"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <!-- BOTÓN MENOS -->
+        <ImageButton
+            android:id="@+id/btnMenos"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:background="@drawable/btn_round"
+            android:src="@drawable/ic_menos" />
+
+        <View
+            android:layout_width="20dp"
+            android:layout_height="1dp"/>
+
+        <!-- BOTÓN MÁS -->
+        <ImageButton
+            android:id="@+id/btnMas"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:background="@drawable/btn_round"
+            android:src="@drawable/ic_mas" />
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerHistorialAgua"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:padding="16dp"
+        android:background="@color/fondoGris"
+        app:layout_constraintTop_toBottomOf="@id/botones"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

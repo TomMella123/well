@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="24dp">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- BACK + TITLE -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/btnBack"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_back_arrow" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Editar perfil"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:layout_marginStart="16dp" />
+        </LinearLayout>
+
+        <!-- FOTO -->
+        <ImageView
+            android:id="@+id/imgEditFoto"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:src="@drawable/ic_user"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:background="#DDDDDD"
+            android:clipToOutline="true" />
+
+        <Button
+            android:id="@+id/btnCambiarFoto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Cambiar foto"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/btn_bg" />
+
+        <!-- CAMPOS -->
+        <EditText
+            android:id="@+id/etNombre"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Nombre completo"
+            android:layout_marginTop="20dp" />
+
+        <EditText
+            android:id="@+id/etCorreo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Correo electrónico"
+            android:inputType="textEmailAddress"
+            android:layout_marginTop="16dp" />
+
+        <EditText
+            android:id="@+id/etRut"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="RUT"
+            android:layout_marginTop="16dp" />
+
+        <EditText
+            android:id="@+id/etDV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="DV"
+            android:layout_marginTop="16dp" />
+
+        <!-- SEXO -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sexo"
+            android:textStyle="bold"
+            android:layout_marginTop="20dp" />
+
+        <RadioGroup
+            android:id="@+id/rgSexo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RadioButton
+                android:id="@+id/rbHombre"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Masculino" />
+
+            <RadioButton
+                android:id="@+id/rbMujer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Femenino" />
+
+            <RadioButton
+                android:id="@+id/rbOtro"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Otro" />
+        </RadioGroup>
+
+        <!-- ALTURA -->
+        <EditText
+            android:id="@+id/etAltura"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Altura (cm)"
+            android:inputType="number"
+            android:layout_marginTop="20dp" />
+
+        <!-- PESO -->
+        <EditText
+            android:id="@+id/etPeso"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Peso (kg)"
+            android:inputType="number"
+            android:layout_marginTop="16dp" />
+
+        <!-- ENFERMEDADES -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Enfermedades"
+            android:textStyle="bold"
+            android:layout_marginTop="20dp" />
+
+        <CheckBox
+            android:id="@+id/chkDiabetes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Diabetes" />
+
+        <CheckBox
+            android:id="@+id/chkHipertension"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hipertensión" />
+
+        <!-- FECHA -->
+        <EditText
+            android:id="@+id/etFecha"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Fecha nacimiento (DD/MM/AAAA)"
+            android:layout_marginTop="20dp"
+            android:inputType="date" />
+
+        <!-- BOTON GUARDAR -->
+        <Button
+            android:id="@+id/btnGuardar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Guardar cambios"
+            android:background="@drawable/btn_bg"
+            android:layout_marginTop="30dp" />
+    </LinearLayout>
+
+</ScrollView>

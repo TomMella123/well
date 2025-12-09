@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#F5F5F5">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- TARJETA ROJA SUPERIOR -->
+        <LinearLayout
+            android:id="@+id/cardPresionTop"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:background="#C62828"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:src="@drawable/ic_rc"
+                app:tint="#FFFFFF" />
+
+            <TextView
+                android:id="@+id/tvPresionUltima"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0/0 mm/Hg"
+                android:textColor="#FFFFFF"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:layout_marginTop="8dp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Última lectura"
+                android:textColor="#FFFFFF" />
+        </LinearLayout>
+
+        <!-- FORMULARIO DE INGRESO -->
+        <TextView
+            android:id="@+id/tvLabelSistolica"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ingreso de sistólica"
+            android:textSize="14sp"
+            android:textColor="#666666"
+            android:layout_marginTop="24dp" />
+
+        <EditText
+            android:id="@+id/etSistolica"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="00 mm/Hg"
+            android:inputType="number"
+            android:background="@android:color/transparent"
+            android:paddingBottom="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="8dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#CCCCCC" />
+
+        <TextView
+            android:id="@+id/tvLabelDiastolica"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ingreso de diastólica"
+            android:textSize="14sp"
+            android:textColor="#666666"
+            android:layout_marginTop="16dp" />
+
+        <EditText
+            android:id="@+id/etDiastolica"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="00 mm/Hg"
+            android:inputType="number"
+            android:background="@android:color/transparent"
+            android:paddingBottom="4dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginBottom="8dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#CCCCCC" />
+
+        <Button
+            android:id="@+id/btnIngresarPresion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ingresar"
+            android:textColor="@android:color/white"
+            android:backgroundTint="#C62828"
+            android:layout_marginTop="24dp"
+            android:layout_gravity="center_horizontal"
+            android:paddingLeft="32dp"
+            android:paddingRight="32dp" />
+
+        <!-- LISTA DE REGISTROS -->
+        <LinearLayout
+            android:id="@+id/containerHistorialPresion"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="24dp" />
+
+        <!-- TARJETA GRÁFICO SEMANAL (PLACEHOLDER) -->
+        <LinearLayout
+            android:id="@+id/cardGraficoPresion"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:background="@drawable/card_bg"
+            android:orientation="vertical"
+            android:padding="12dp"
+            android:layout_marginTop="24dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Semanal"
+                android:textStyle="bold"
+                android:layout_gravity="end" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="#FFEBEE" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.WellFit">
+
+        <!-- ACTIVITY PRINCIPAL -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.WellFit">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- LOGIN -->
+        <activity
+            android:name="com.example.wellfit.ui.login.LoginActivity"
+            android:exported="false" />
+
+        <!-- REGISTER -->
+        <activity
+            android:name="com.example.wellfit.ui.register.RegisterActivity"
+            android:exported="false" />
+
+        <!-- DASHBOARD -->
+        <activity
+            android:name="com.example.wellfit.ui.dashboard.DashboardActivity"
+            android:exported="false" />
+
+        <!-- PERFIL -->
+        <activity
+            android:name="com.example.wellfit.ui.perfil.PerfilActivity"
+            android:exported="false" />
+        <activity
+            android:name="com.example.wellfit.ui.perfil.EditProfileActivity"
+            android:exported="false" />
+
+        <!-- ============================= -->
+        <!--     SECCIÓN DE SALUD          -->
+        <!-- ============================= -->
+
+        <!-- GLUCOSA -->
+        <activity
+            android:name="com.example.wellfit.ui.salud.GlucosaActivity"
+            android:exported="false" />
+
+        <!-- PRESIÓN -->
+        <activity
+            android:name="com.example.wellfit.ui.salud.PresionActivity"
+            android:exported="false" />
+
+        <!-- PASOS -->
+        <activity
+            android:name="com.example.wellfit.ui.salud.PasosActivity"
+            android:exported="false" />
+
+        <!-- HIDRATACIÓN -->
+        <activity
+            android:name="com.example.wellfit.ui.hidratacion.HidratacionActivity"
+            android:exported="false" />
+
+        <!-- EJERCICIO -->
+        <activity
+            android:name="com.example.wellfit.ui.ejercicio.EjercicioActivity"
+            android:exported="false" />
+
+        <!-- RECETAS -->
+        <activity
+            android:name="com.example.wellfit.ui.recetas.RecetasActivity"
+            android:exported="false" />
+
+        <!-- DESAFÍOS -->
+        <activity
+            android:name="com.example.wellfit.ui.desafios.DesafiosActivity"
+            android:exported="false" />
+
+    </application>
+
+</manifest>

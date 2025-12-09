@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="24dp"
+    android:background="@android:color/white">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- FOTO PERFIL -->
+        <FrameLayout
+            android:layout_width="140dp"
+            android:layout_height="140dp"
+            android:layout_marginTop="20dp">
+
+            <ImageView
+                android:id="@+id/imgPerfil"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_user"
+                android:scaleType="centerCrop"
+                android:background="#DDDDDD" />
+
+            <ImageView
+                android:id="@+id/btnCambiarFoto"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_add_photo"
+                android:layout_gravity="bottom|end"
+                android:background="@drawable/circle_white" />
+        </FrameLayout>
+
+        <!-- NOMBRE -->
+        <EditText
+            android:id="@+id/edtNombre"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Nombre completo"
+            android:inputType="textPersonName"
+            android:background="@drawable/edittext_bg"
+            android:padding="12dp"
+            android:layout_marginTop="20dp" />
+
+        <!-- CORREO -->
+        <EditText
+            android:id="@+id/edtCorreo"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Correo electrónico"
+            android:inputType="textEmailAddress"
+            android:background="@drawable/edittext_bg"
+            android:padding="12dp"
+            android:layout_marginTop="12dp" />
+
+        <!-- RUT + DV -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="12dp">
+
+            <EditText
+                android:id="@+id/edtRut"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:hint="RUT"
+                android:background="@drawable/edittext_bg"
+                android:padding="12dp" />
+
+            <EditText
+                android:id="@+id/edtDV"
+                android:layout_width="60dp"
+                android:layout_height="50dp"
+                android:hint="DV"
+                android:background="@drawable/edittext_bg"
+                android:padding="12dp"
+                android:layout_marginStart="8dp" />
+        </LinearLayout>
+
+        <!-- SEXO -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Sexo:"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_marginTop="20dp" />
+
+        <RadioGroup
+            android:id="@+id/rgSexo"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RadioButton
+                android:id="@+id/rbHombre"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Hombre" />
+
+            <RadioButton
+                android:id="@+id/rbMujer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mujer"
+                android:layout_marginStart="20dp" />
+
+            <RadioButton
+                android:id="@+id/rbOtro"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Otro"
+                android:layout_marginStart="20dp" />
+        </RadioGroup>
+
+        <!-- FECHA -->
+        <EditText
+            android:id="@+id/edtFecha"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Fecha nacimiento (DD/MM/AAAA)"
+            android:inputType="date"
+            android:background="@drawable/edittext_bg"
+            android:padding="12dp"
+            android:layout_marginTop="12dp" />
+
+        <!-- ALTURA -->
+        <EditText
+            android:id="@+id/edtAltura"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Altura (cm)"
+            android:inputType="number"
+            android:background="@drawable/edittext_bg"
+            android:padding="12dp"
+            android:layout_marginTop="12dp" />
+
+        <!-- PESO -->
+        <EditText
+            android:id="@+id/edtPeso"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="Peso (kg)"
+            android:inputType="number"
+            android:background="@drawable/edittext_bg"
+            android:padding="12dp"
+            android:layout_marginTop="12dp" />
+
+        <!-- ENFERMEDADES (MULTISELECTOR REMOTO) -->
+        <!-- Selector de enfermedades (remoto) -->
+        <TextView
+            android:id="@+id/tvEnfermedadesLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Enfermedades"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            android:layout_marginTop="16dp"/>
+
+        <Button
+            android:id="@+id/btnSeleccionarEnfermedades"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Seleccionar enfermedades" />
+
+        <TextView
+            android:id="@+id/tvEnfermedadesSeleccionadas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Cargando enfermedades..."
+            android:layout_marginTop="8dp" />
+
+
+        <!-- PASSWORD -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal"
+            android:background="@drawable/edittext_bg"
+            android:padding="8dp"
+            android:layout_marginTop="20dp">
+
+            <EditText
+                android:id="@+id/edtPassword"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:hint="Contraseña"
+                android:inputType="textPassword"
+                android:padding="8dp" />
+
+            <ImageView
+                android:id="@+id/btnMostrarPass"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_eye_closed" />
+        </LinearLayout>
+
+        <!-- BOTÓN REGISTRAR -->
+        <Button
+            android:id="@+id/btnRegistrar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Crear cuenta"
+            android:background="@color/blue"
+            android:textColor="@android:color/white"
+            android:layout_marginTop="30dp" />
+
+    </LinearLayout>
+</ScrollView>
