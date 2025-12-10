@@ -1,48 +1,34 @@
 package com.example.wellfit.ui.salud
 
 import android.os.Bundle
+import android.widget.EditText
 import android.widget.Toast
 import androidx.activity.viewModels
+import com.example.wellfit.R
 import com.example.wellfit.core.BaseActivity
-import com.example.wellfit.databinding.ActivityGlucosaBinding
+import com.example.wellfit.data.local.UserPrefs
 import com.example.wellfit.viewmodel.SaludViewModel
 
 class GlucosaActivity : BaseActivity() {
-
-    private lateinit var binding: ActivityGlucosaBinding
     private val viewModel: SaludViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityGlucosaBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(R.layout.activity_glucosa)
 
-        // ID CORREGIDO: btnIngresarGlucosa
-        binding.btnIngresarGlucosa.setOnClickListener {
-            // ID CORREGIDO: etNuevaGlucosa
-            val valorStr = binding.etNuevaGlucosa.text.toString()
-            if (valorStr.isNotEmpty()) {
-                val valor = valorStr.toIntOrNull()
+        val prefs = UserPrefs(this)
+        val idPaciente = prefs.getString("idPaciente")?.toLongOrNull() ?: 0L
 
-                // TODO: Recuperar el ID real del usuario desde SharedPreferences
-                val idPaciente = 1L
+        findViewById<android.view.View>(R.id.btnIngresarGlucosa).setOnClickListener {
+            val input = findViewById<EditText>(R.id.etNuevaGlucosa)
+            val valor = input.text.toString().toIntOrNull()
 
-                viewModel.registrarDatosSalud(
-                    idPaciente = idPaciente,
-                    glucosa = valor
-                )
+            if (valor != null && idPaciente != 0L) {
+                viewModel.registrarDatosSalud(idPaciente = idPaciente, glucosa = valor)
+                input.text.clear()
+                Toast.makeText(this, "Guardando...", Toast.LENGTH_SHORT).show()
             } else {
-                Toast.makeText(this, "Ingresa un valor", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        viewModel.operacionExitosa.observe(this) { exito ->
-            if (exito) {
-                Toast.makeText(this, "Glucosa guardada", Toast.LENGTH_SHORT).show()
-                binding.etNuevaGlucosa.text.clear()
-                // Opcional: Actualizar el texto superior tvGlucosaUltima
-            } else {
-                Toast.makeText(this, "Error al guardar", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Error: Revisa el valor o tu sesión", Toast.LENGTH_SHORT).show()
             }
         }
     }

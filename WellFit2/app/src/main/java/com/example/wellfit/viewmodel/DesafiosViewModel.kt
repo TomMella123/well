@@ -2,28 +2,15 @@ package com.example.wellfit.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.example.wellfit.data.remote.DesafioRemoto
-import com.example.wellfit.data.repository.DesafioRepository
+import com.example.wellfit.data.remote.OracleRemoteDataSource
 import kotlinx.coroutines.launch
 
-class DesafiosViewModel(application: Application) : AndroidViewModel(application) {
-
-    private val repository = DesafioRepository()
-
-    private val _listaDesafios = MutableLiveData<List<DesafioRemoto>>()
-    val listaDesafios: LiveData<List<DesafioRemoto>> = _listaDesafios
-
+class DesafiosViewModel(app: Application) : AndroidViewModel(app) {
+    val listaDesafios = MutableLiveData<List<DesafioRemoto>>()
     init {
-        cargarDesafios()
-    }
-
-    fun cargarDesafios() {
-        viewModelScope.launch {
-            val lista = repository.obtenerDesafios()
-            _listaDesafios.postValue(lista)
-        }
+        viewModelScope.launch { listaDesafios.postValue(OracleRemoteDataSource.obtenerDesafios()) }
     }
 }

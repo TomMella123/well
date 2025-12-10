@@ -1,32 +1,28 @@
 package com.example.wellfit.viewmodel
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.wellfit.data.local.entities.UserHealthDataEntity
-import com.example.wellfit.data.repository.SaludRepository
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
+import com.example.wellfit.data.remote.OracleRemoteDataSource
 import kotlinx.coroutines.launch
 
-class HidratacionViewModel(
-    private val saludRepository: SaludRepository
-) : ViewModel() {
+class HidratacionViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val _datosHidratacion = MutableStateFlow<List<UserHealthDataEntity>>(emptyList())
-    val datosHidratacion: StateFlow<List<UserHealthDataEntity>> = _datosHidratacion
+    val vasosActuales = MutableLiveData<Int>()
 
-    // ✅ GUARDAR: solo local (Room) + pendingSync = true
-    fun registrarAgua(data: UserHealthDataEntity) {
+    fun cargarHidratacion(idPaciente: Long) {
         viewModelScope.launch {
-            saludRepository.insertHealthData(data)
-            cargarHidratacion(data.idPaciente)
+            val historial = OracleRemoteDataSource.obtenerHistorialSalud(idPaciente)
+            val ultimo = historial.filter { it.aguaVasos != null }.maxByOrNull { it.fechaData + it.idData }
+            vasosActuales.postValue(ultimo?.aguaVasos ?: 0)
         }
     }
 
-    // ✅ CARGAR: de momento solo local
-    fun cargarHidratacion(idPaciente: Long) {
+    fun registrarVaso(idPaciente: Long, cantidad: Int) {
         viewModelScope.launch {
-            _datosHidratacion.value = saludRepository.getHealthData(idPaciente)
+            OracleRemoteDataSource.crearDatoSaludRemoto(idPaciente, null, null, null, cantidad, null)
+            vasosActuales.postValue(cantidad)
         }
     }
 }

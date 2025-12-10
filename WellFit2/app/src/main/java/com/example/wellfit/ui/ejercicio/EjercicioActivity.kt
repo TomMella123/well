@@ -9,9 +9,8 @@ import com.example.wellfit.databinding.ActivityEjercicioBinding
 import com.example.wellfit.viewmodel.EjercicioViewModel
 
 class EjercicioActivity : BaseActivity() {
-
     private lateinit var binding: ActivityEjercicioBinding
-    private val viewModel: EjercicioViewModel by viewModels()
+    private val vm: EjercicioViewModel by viewModels()
     private val adapter = EjercicioAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,15 +21,11 @@ class EjercicioActivity : BaseActivity() {
         binding.rvEjercicios.layoutManager = LinearLayoutManager(this)
         binding.rvEjercicios.adapter = adapter
 
-        // No hay botón "back" en el header morado de este XML, así que no seteamos listener.
-
-        viewModel.ejercicios.observe(this) { list ->
+        vm.ejercicios.observe(this) { list ->
             if (list.isNotEmpty()) {
-                adapter.updateList(list)
+                adapter.update(list)
                 binding.tvEjerciciosVacios.visibility = View.GONE
-                binding.rvEjercicios.visibility = View.VISIBLE
             } else {
-                binding.rvEjercicios.visibility = View.GONE
                 binding.tvEjerciciosVacios.visibility = View.VISIBLE
             }
         }

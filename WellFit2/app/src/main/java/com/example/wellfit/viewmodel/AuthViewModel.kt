@@ -1,75 +1,48 @@
 package com.example.wellfit.viewmodel
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.wellfit.data.remote.EnfermedadRemota
-import com.example.wellfit.data.remote.ObjetivoRemoto
-import com.example.wellfit.data.remote.OracleRemoteDataSource
-import com.example.wellfit.data.remote.PacientePostRequest
-import com.example.wellfit.data.remote.PacienteRemoto
+import com.example.wellfit.data.remote.*
 import kotlinx.coroutines.launch
 
 class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val _loginPaciente = MutableLiveData<PacienteRemoto?>()
-    val loginPaciente: LiveData<PacienteRemoto?> = _loginPaciente
+    val loginPaciente = MutableLiveData<PacienteRemoto?>()
+    val registroOk = MutableLiveData<Boolean>()
+    val enfermedades = MutableLiveData<List<EnfermedadRemota>>()
+    val objetivos = MutableLiveData<List<ObjetivoRemoto>>()
+    val enfermedadesOk = MutableLiveData<Boolean?>()
 
-    private val _registroOk = MutableLiveData<Boolean>()
-    val registroOk: LiveData<Boolean> = _registroOk
-
-    private val _enfermedades = MutableLiveData<List<EnfermedadRemota>>()
-    val enfermedades: LiveData<List<EnfermedadRemota>> = _enfermedades
-
-    private val _objetivos = MutableLiveData<List<ObjetivoRemoto>>()
-    val objetivos: LiveData<List<ObjetivoRemoto>> = _objetivos
-
-    private val _enfermedadesOk = MutableLiveData<Boolean?>()
-    val enfermedadesOk: LiveData<Boolean?> = _enfermedadesOk
-
-    // LOGIN (Sin guardar en local)
-    fun loginRemoto(correo: String, password: String) {
+    fun loginRemoto(correo: String, pass: String) {
         viewModelScope.launch {
-            try {
-                val paciente = OracleRemoteDataSource.loginPaciente(correo, password)
-                _loginPaciente.postValue(paciente)
-            } catch (e: Exception) {
-                Log.e("AuthVM", "Error login", e)
-                _loginPaciente.postValue(null)
-            }
+            val res = OracleRemoteDataSource.loginPaciente(correo, pass)
+            loginPaciente.postValue(res)
         }
     }
 
-    // REGISTRO (Sin guardar en local)
-    fun registrarPacienteRemoto(request: PacientePostRequest) {
+    fun registrarPacienteRemoto(req: PacientePostRequest) {
         viewModelScope.launch {
-            try {
-                val ok = OracleRemoteDataSource.crearPacienteRemoto(request)
-                _registroOk.postValue(ok)
-            } catch (e: Exception) {
-                _registroOk.postValue(false)
-            }
+            // Asegura que coincida con el nombre en OracleRemoteDataSource
+            val ok = OracleRemoteDataSource.crearPacienteRemoto(req)
+            registroOk.postValue(ok)
         }
     }
 
     fun cargarEnfermedadesYObjetivos() {
         viewModelScope.launch {
-            _enfermedades.postValue(OracleRemoteDataSource.obtenerEnfermedades())
-            _objetivos.postValue(OracleRemoteDataSource.obtenerObjetivos())
+            enfermedades.postValue(OracleRemoteDataSource.obtenerEnfermedades())
+            objetivos.postValue(OracleRemoteDataSource.obtenerObjetivos())
         }
     }
 
-    fun asociarEnfermedades(rut: Long, dv: String, enfermedadesIds: List<Long>) {
+    fun asociarEnfermedades(rut: Long, dv: String, ids: List<Long>) {
         viewModelScope.launch {
-            val ok = OracleRemoteDataSource.registrarEnfermedadesPacientePorRut(rut, dv, enfermedadesIds)
-            _enfermedadesOk.postValue(ok)
+            val ok = OracleRemoteDataSource.registrarEnfermedadesPacientePorRut(rut, dv, ids)
+            enfermedadesOk.postValue(ok)
         }
     }
 
-    fun resetEnfermedadesOk() {
-        _enfermedadesOk.value = null
-    }
+    fun resetEnfermedadesOk() { enfermedadesOk.value = null }
 }

@@ -8,46 +8,29 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.wellfit.R
 import com.example.wellfit.data.remote.DesafioRemoto
 
-class DesafioAdapter(
-    private var desafios: List<DesafioRemoto> = emptyList()
-) : RecyclerView.Adapter<DesafioAdapter.DesafioViewHolder>() {
+class DesafioAdapter(private var list: List<DesafioRemoto> = emptyList()) : RecyclerView.Adapter<DesafioAdapter.VH>() {
 
-    class DesafioViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        // IDs corregidos según item_desafio.xml
-        val tvNombre: TextView = view.findViewById(R.id.tvTituloDesafio)
-        val tvDesc: TextView = view.findViewById(R.id.tvDescripcionDesafio)
-        val tvPuntos: TextView = view.findViewById(R.id.tvPuntosDesafio)
-        // Agregamos dificultad ya que existe en el XML
-        val tvDificultad: TextView = view.findViewById(R.id.tvDificultadDesafio)
+    class VH(v: View) : RecyclerView.ViewHolder(v) {
+        val titulo: TextView = v.findViewById(R.id.tvTituloDesafio)
+        val desc: TextView = v.findViewById(R.id.tvDescripcionDesafio)
+        val puntos: TextView = v.findViewById(R.id.tvPuntosDesafio)
+        val dif: TextView = v.findViewById(R.id.tvDificultadDesafio)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DesafioViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_desafio, parent, false)
-        return DesafioViewHolder(view)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
+        val v = LayoutInflater.from(parent.context).inflate(R.layout.item_desafio, parent, false)
+        return VH(v)
     }
 
-    override fun onBindViewHolder(holder: DesafioViewHolder, position: Int) {
-        val item = desafios[position]
-
-        holder.tvNombre.text = item.nombreDesafio ?: "Desafío"
-        holder.tvDesc.text = item.descripcionDesafio ?: "Sin descripción"
-        holder.tvPuntos.text = "🏆 ${item.puntaje ?: 0} puntos"
-
-        // Mapeo simple de ID dificultad a texto (ajusta según tu lógica)
-        val dificultadTexto = when(item.idDificultad) {
-            1 -> "Fácil"
-            2 -> "Medio"
-            3 -> "Avanzado"
-            else -> "General"
-        }
-        holder.tvDificultad.text = dificultadTexto
+    override fun onBindViewHolder(h: VH, pos: Int) {
+        val item = list[pos]
+        h.titulo.text = item.nombreDesafio ?: "Desafío"
+        h.desc.text = item.descripcionDesafio ?: "Sin descripción"
+        h.puntos.text = "🏆 ${item.puntaje ?: 0} pts"
+        h.dif.text = "Nivel: ${item.idDificultad ?: 1}"
     }
 
-    override fun getItemCount() = desafios.size
+    override fun getItemCount() = list.size
 
-    fun actualizarLista(nuevaLista: List<DesafioRemoto>) {
-        desafios = nuevaLista
-        notifyDataSetChanged()
-    }
+    fun update(l: List<DesafioRemoto>) { list = l; notifyDataSetChanged() }
 }

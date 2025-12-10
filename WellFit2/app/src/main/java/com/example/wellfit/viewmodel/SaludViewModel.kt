@@ -12,11 +12,10 @@ class SaludViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository = SaludRepository()
 
+    // ESTA ES LA VARIABLE QUE FALTABA O ESTABA MAL ESCRITA
     private val _operacionExitosa = MutableLiveData<Boolean>()
-    val operacionExitosa: LiveData<Boolean> = _operacionExitosa
+    val operacionExitosa: LiveData<Boolean> get() = _operacionExitosa
 
-    // Llama a esto desde tus Activities (GlucosaActivity, PresionActivity)
-    // Pasando el ID del paciente logueado (NO el RUT)
     fun registrarDatosSalud(
         idPaciente: Long,
         presionSis: Int? = null,
@@ -26,7 +25,11 @@ class SaludViewModel(application: Application) : AndroidViewModel(application) {
         pasos: Int? = null
     ) {
         viewModelScope.launch {
-            val exito = repository.subirDatosSalud(idPaciente, presionSis, presionDias, glucosa, agua, pasos)
+            // Llamamos al repositorio
+            val exito = repository.subirDatosSalud(
+                idPaciente, presionSis, presionDias, glucosa, agua, pasos
+            )
+            // Notificamos a la vista
             _operacionExitosa.postValue(exito)
         }
     }

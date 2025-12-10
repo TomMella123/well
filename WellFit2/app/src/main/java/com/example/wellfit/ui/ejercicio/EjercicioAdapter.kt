@@ -8,39 +8,25 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.wellfit.R
 import com.example.wellfit.data.remote.EjercicioRemoto
 
-class EjercicioAdapter(
-    private var lista: List<EjercicioRemoto> = emptyList()
-) : RecyclerView.Adapter<EjercicioAdapter.ViewHolder>() {
+class EjercicioAdapter(private var list: List<EjercicioRemoto> = emptyList()) : RecyclerView.Adapter<EjercicioAdapter.VH>() {
 
-    class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val tvNombre: TextView = view.findViewById(R.id.tvNombreEjercicio)
-        // CORRECCIÓN: Usamos el ID que sí existe en el XML
-        val tvDescripcion: TextView = view.findViewById(R.id.tvDescripcionEjercicio)
+    class VH(v: View) : RecyclerView.ViewHolder(v) {
+        val titulo: TextView = v.findViewById(R.id.tvNombreEjercicio)
+        val desc: TextView = v.findViewById(R.id.tvDescripcionEjercicio)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_ejercicio_recomendado, parent, false)
-        return ViewHolder(view)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
+        val v = LayoutInflater.from(parent.context).inflate(R.layout.item_ejercicio_recomendado, parent, false)
+        return VH(v)
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = lista[position]
-        holder.tvNombre.text = item.nombreEjercicio ?: "Ejercicio"
-
-        // Concatenamos la descripción o las series en el campo de descripción
-        val detalles = if (item.series != null && item.repeticiones != null) {
-            "${item.series} series x ${item.repeticiones} reps"
-        } else {
-            item.descripcionEjercicio ?: "Sin detalles"
-        }
-        holder.tvDescripcion.text = detalles
+    override fun onBindViewHolder(h: VH, pos: Int) {
+        val item = list[pos]
+        h.titulo.text = item.nombreEjercicio ?: "Ejercicio"
+        h.desc.text = "${item.series ?: 0} series x ${item.repeticiones ?: 0} reps"
     }
 
-    override fun getItemCount() = lista.size
+    override fun getItemCount() = list.size
 
-    fun updateList(newList: List<EjercicioRemoto>) {
-        lista = newList
-        notifyDataSetChanged()
-    }
+    fun update(l: List<EjercicioRemoto>) { list = l; notifyDataSetChanged() }
 }

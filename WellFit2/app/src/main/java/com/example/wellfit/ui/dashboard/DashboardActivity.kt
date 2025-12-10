@@ -2,12 +2,13 @@ package com.example.wellfit.ui.dashboard
 
 import android.content.Intent
 import android.os.Bundle
-import android.widget.LinearLayout
+import android.view.View
 import android.widget.TextView
+import androidx.lifecycle.lifecycleScope
 import com.example.wellfit.R
 import com.example.wellfit.core.BaseActivity
-import com.example.wellfit.data.local.AppDatabase
 import com.example.wellfit.data.local.UserPrefs
+import com.example.wellfit.data.remote.OracleRemoteDataSource
 import com.example.wellfit.ui.ejercicio.EjercicioActivity
 import com.example.wellfit.ui.hidratacion.HidratacionActivity
 import com.example.wellfit.ui.perfil.PerfilActivity
@@ -15,123 +16,56 @@ import com.example.wellfit.ui.recetas.RecetasActivity
 import com.example.wellfit.ui.salud.GlucosaActivity
 import com.example.wellfit.ui.salud.PasosActivity
 import com.example.wellfit.ui.salud.PresionActivity
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class DashboardActivity : BaseActivity() {
-
-    private lateinit var prefs: UserPrefs
-
-    // TextViews que SÍ existen en activity_dashboard.xml
-    private lateinit var tvHolaNombre: TextView
-    private lateinit var tvGlucosaValor: TextView
-    private lateinit var tvPresionValor: TextView
-
-    // Cards / botones (IDs reales en el XML)
-    private lateinit var btnGlucosa: LinearLayout
-    private lateinit var btnPresion: LinearLayout
-    private lateinit var btnHidratacion: LinearLayout
-    private lateinit var btnPasos: LinearLayout
-    private lateinit var btnRecetas: LinearLayout
-    private lateinit var btnEjercicio: LinearLayout
-
-    private val db by lazy { AppDatabase.getDatabase(this) }
-    private val saludDao by lazy { db.saludDao() }
-
     private var idPaciente: Long = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_dashboard)
 
-        prefs = UserPrefs(this)
+        val prefs = UserPrefs(this)
         idPaciente = prefs.getString("idPaciente")?.toLongOrNull() ?: 0L
+        findViewById<TextView>(R.id.tvHola).text = "Hola, ${prefs.getString("nombre") ?: "Usuario"}"
 
-        // IDs según activity_dashboard.xml :contentReference[oaicite:0]{index=0}
-        tvHolaNombre = findViewById(R.id.tvHola)
-        tvGlucosaValor = findViewById(R.id.tvGlucosaDashboardValor)
-        tvPresionValor = findViewById(R.id.tvPresionDashboardValor)
-
-        btnGlucosa = findViewById(R.id.btnGlucosa)
-        btnPresion = findViewById(R.id.btnPresion)
-        btnHidratacion = findViewById(R.id.btnHidratacion)
-        btnPasos = findViewById(R.id.btnPasos)
-        btnRecetas = findViewById(R.id.btnRecetas)
-        btnEjercicio = findViewById(R.id.btnEjercicio)
-
-        val nombre = prefs.getString("nombre") ?: "Usuario"
-        tvHolaNombre.text = "Hola, $nombre"
-
-        configurarClicks()
-        cargarDatosSalud()
-    }
-
-    private fun configurarClicks() {
-        btnGlucosa.setOnClickListener {
-            startActivity(Intent(this, GlucosaActivity::class.java))
-        }
-        btnPasos.setOnClickListener {
-            startActivity(Intent(this, PasosActivity::class.java))
-        }
-        btnPresion.setOnClickListener {
-            startActivity(Intent(this, PresionActivity::class.java))
-        }
-        btnHidratacion.setOnClickListener {
-            startActivity(Intent(this, HidratacionActivity::class.java))
-        }
-        btnEjercicio.setOnClickListener {
-            startActivity(Intent(this, EjercicioActivity::class.java))
-        }
-        btnRecetas.setOnClickListener {
-            startActivity(Intent(this, RecetasActivity::class.java))
-        }
-
-        // El perfil lo abres con el botón del círculo blanco de abajo
-        findViewById<android.widget.RelativeLayout>(R.id.navPerfil).setOnClickListener {
-            startActivity(Intent(this, PerfilActivity::class.java))
-        }
+        setupListeners()
     }
 
     override fun onResume() {
         super.onResume()
-        // Por si vuelve desde Glucosa/Presión/etc.
-        cargarDatosSalud()
+        if (idPaciente != 0L) cargarDatos()
     }
 
-    private fun cargarDatosSalud() {
-        if (idPaciente == 0L) {
-            tvGlucosaValor.text = "00 mg/dl"
-            tvPresionValor.text = "00/00 mmHg"
-            return
-        }
+    private fun setupListeners() {
+        findViewById<View>(R.id.btnGlucosa).setOnClickListener { startActivity(Intent(this, GlucosaActivity::class.java)) }
+        findViewById<View>(R.id.btnPresion).setOnClickListener { startActivity(Intent(this, PresionActivity::class.java)) }
+        findViewById<View>(R.id.btnPasos).setOnClickListener { startActivity(Intent(this, PasosActivity::class.java)) }
+        findViewById<View>(R.id.btnHidratacion).setOnClickListener { startActivity(Intent(this, HidratacionActivity::class.java)) }
+        findViewById<View>(R.id.btnEjercicio).setOnClickListener { startActivity(Intent(this, EjercicioActivity::class.java)) }
+        findViewById<View>(R.id.btnRecetas).setOnClickListener { startActivity(Intent(this, RecetasActivity::class.java)) }
+        findViewById<View>(R.id.navPerfil).setOnClickListener { startActivity(Intent(this, PerfilActivity::class.java)) }
+    }
 
-        CoroutineScope(Dispatchers.IO).launch {
-            // OJO: getUltimoRegistroGlucosa() NO recibe idPaciente :contentReference[oaicite:1]{index=1}
-            val ultimoGlucosa = saludDao.getUltimoRegistroGlucosa()
-            val ultimaPresion = saludDao.getUltimoRegistroPresion(idPaciente)
+    private fun cargarDatos() {
+        lifecycleScope.launch {
+            val historial = OracleRemoteDataSource.obtenerHistorialSalud(idPaciente)
+            val desafios = OracleRemoteDataSource.obtenerDesafios()
 
-            withContext(Dispatchers.Main) {
+            // 1. Glucosa
+            val gl = historial.filter { it.glucosaSangre != null }.maxByOrNull { it.fechaData + it.idData }
+            findViewById<TextView>(R.id.tvGlucosaDashboardValor).text = if (gl != null) "${gl.glucosaSangre} mg/dl" else "00 mg/dl"
 
-                // Glucosa
-                if (ultimoGlucosa != null && ultimoGlucosa.glucosaSangre != null) {
-                    tvGlucosaValor.text = "${ultimoGlucosa.glucosaSangre} mg/dl"
-                } else {
-                    tvGlucosaValor.text = "00 mg/dl"
-                }
+            // 2. Presión
+            val pr = historial.filter { it.presionSistolica != null }.maxByOrNull { it.fechaData + it.idData }
+            findViewById<TextView>(R.id.tvPresionDashboardValor).text = if (pr != null) "${pr.presionSistolica}/${pr.presionDiastolica}" else "00/00"
 
-                // Presión
-                if (ultimaPresion != null &&
-                    ultimaPresion.presionSistolica != null &&
-                    ultimaPresion.presionDiastolica != null
-                ) {
-                    tvPresionValor.text =
-                        "${ultimaPresion.presionSistolica}/${ultimaPresion.presionDiastolica} mmHg"
-                } else {
-                    tvPresionValor.text = "00/00 mmHg"
-                }
-            }
+            // 3. Hidratación
+            val ag = historial.filter { it.aguaVasos != null }.maxByOrNull { it.fechaData + it.idData }
+            findViewById<TextView>(R.id.tvHidratacionDashboardValor).text = if (ag != null) "${ag.aguaVasos}/8 vasos" else "0/8"
+
+            // 4. Desafíos Count
+            findViewById<TextView>(R.id.tvDesafiosCount).text = "${desafios.size} disponibles"
         }
     }
 }
