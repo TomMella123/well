@@ -1,150 +1,111 @@
 package com.example.wellfit.viewmodel
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.wellfit.data.remote.EnfermedadRemota
-import com.example.wellfit.data.remote.ObjetivoRemoto
-import com.example.wellfit.data.remote.OracleRemoteDataSource
-import com.example.wellfit.data.remote.PacientePostRequest
-import com.example.wellfit.data.remote.PacienteRemoto
+import com.example.wellfit.data.local.AppDatabase
+import com.example.wellfit.data.local.entities.PacienteEntity
+import com.example.wellfit.data.repository.PacienteRepository
 import kotlinx.coroutines.launch
 
 class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
-    // --- LOGIN ---
-    private val _loginPaciente = MutableLiveData<PacienteRemoto?>()
-    val loginPaciente: LiveData<PacienteRemoto?> = _loginPaciente
+    private val repository: PacienteRepository
 
-    // --- REGISTRO ---
-    private val _registroOk = MutableLiveData<Boolean>()
-    val registroOk: LiveData<Boolean> = _registroOk
+    // LiveData para observar el resultado del Login
+    private val _loginResult = MutableLiveData<Boolean>()
+    val loginResult: LiveData<Boolean> get() = _loginResult
 
-    // --- ENFERMEDADES / OBJETIVOS ---
-    private val _enfermedades = MutableLiveData<List<EnfermedadRemota>>()
-    val enfermedades: LiveData<List<EnfermedadRemota>> = _enfermedades
+    // LiveData para observar el resultado del Registro
+    private val _registroResult = MutableLiveData<Boolean>()
+    val registroResult: LiveData<Boolean> get() = _registroResult
 
-    private val _objetivos = MutableLiveData<List<ObjetivoRemoto>>()
-    val objetivos: LiveData<List<ObjetivoRemoto>> = _objetivos
+    // LiveData para errores (opcional)
+    private val _errorMessage = MutableLiveData<String>()
+    val errorMessage: LiveData<String> get() = _errorMessage
 
-    // Resultado de asociar enfermedades al paciente
-    private val _enfermedadesOk = MutableLiveData<Boolean?>()
-    val enfermedadesOk: LiveData<Boolean?> = _enfermedadesOk
+    init {
+        // 1. Obtenemos la base de datos local
+        val database = AppDatabase.getDatabase(application)
+        val pacienteDao = database.pacienteDao()
 
-    // --- DATO DE SALUD (POST user_health) ---
-    private val _datoSaludOk = MutableLiveData<Boolean>()
-    val datoSaludOk: LiveData<Boolean> = _datoSaludOk
+        // 2. CORRECCIÓN AQUÍ: Instanciamos el repo SOLO con el DAO
+        // (Ya no pasamos ApiService porque el repo usa OracleRemoteDataSource internamente)
+        repository = PacienteRepository(pacienteDao)
+    }
 
-    // --------------------------------------------------------------------
-    // LOGIN: usa el endpoint remoto que tú definas en OracleRemoteDataSource
-    // --------------------------------------------------------------------
-    fun loginRemoto(correo: String, password: String) {
+    // Función de Login
+    fun login(email: String, pass: String) {
         viewModelScope.launch {
             try {
-                val paciente = OracleRemoteDataSource.loginPaciente(correo, password)
-                _loginPaciente.value = paciente
+                // 1. Intentamos login en la Nube (Oracle)
+                val pacienteRemoto = repository.loginRemoto(email, pass)
+
+                if (pacienteRemoto != null) {
+                    // Login Exitoso en Nube -> Guardamos/Actualizamos en Local para sesión offline
+                    val nuevoPacienteLocal = PacienteEntity(
+                        rut = pacienteRemoto.rut ?: 0,
+                        dv = pacienteRemoto.dv ?: "K",
+                        nombre = pacienteRemoto.nombre ?: "Usuario",
+                        correo = pacienteRemoto.correo ?: email,
+                        fechaNacimiento = pacienteRemoto.fechaNac ?: "",
+                        genero = pacienteRemoto.genero ?: "O",
+                        altura = pacienteRemoto.altura ?: 0,
+                        peso = pacienteRemoto.peso ?: 0,
+                        idMedico = pacienteRemoto.idMedico ?: 0,
+                        password = pass
+                    )
+                    // Guardamos en local (Room)
+                    repository.insertarPacienteLocal(nuevoPacienteLocal)
+
+                    _loginResult.postValue(true)
+                } else {
+                    // Si falla en nube, intentamos ver si existe en local (Login Offline)
+                    val pacienteLocal = repository.getPacienteActual(email)
+                    if (pacienteLocal != null && pacienteLocal.password == pass) {
+                        _loginResult.postValue(true)
+                    } else {
+                        _errorMessage.postValue("Credenciales incorrectas")
+                        _loginResult.postValue(false)
+                    }
+                }
             } catch (e: Exception) {
-                Log.e("AuthVM", "Error en loginRemoto", e)
-                _loginPaciente.value = null
+                _errorMessage.postValue("Error de conexión: ${e.message}")
+                _loginResult.postValue(false)
             }
         }
     }
 
-    // --------------------------------------------------------------------
-    // REGISTRAR PACIENTE REMOTO (POST /v1/gestion/paciente)
-    // --------------------------------------------------------------------
-    fun registrarPacienteRemoto(request: PacientePostRequest) {
-        viewModelScope.launch {
-            try {
-                val ok = OracleRemoteDataSource.crearPacienteRemoto(request)
-                _registroOk.value = ok
-            } catch (e: Exception) {
-                Log.e("AuthVM", "Error registrarPacienteRemoto", e)
-                _registroOk.value = false
-            }
-        }
-    }
-
-    // --------------------------------------------------------------------
-    // ENFERMEDADES + OBJETIVOS (catálogos)
-    // --------------------------------------------------------------------
-    fun cargarEnfermedadesYObjetivos() {
-        viewModelScope.launch {
-            try {
-                val enf = OracleRemoteDataSource.obtenerEnfermedades()
-                val obj = OracleRemoteDataSource.obtenerObjetivos()
-                _enfermedades.value = enf
-                _objetivos.value = obj
-            } catch (e: Exception) {
-                Log.e("AuthVM", "Error cargarEnfermedadesYObjetivos", e)
-                _enfermedades.value = emptyList()
-                _objetivos.value = emptyList()
-            }
-        }
-    }
-
-    /**
-     * Asocia una o varias enfermedades al paciente vía /v1/gestion/enfermedad/pac_enf,
-     * usando el RUT + DV. Internamente hace un POST por cada id_enfermedad.
-     */
-    fun asociarEnfermedades(
-        rut: Long,
-        dv: String,
-        enfermedadesIds: List<Long>
+    // Función de Registro
+    fun registrar(
+        rut: Long, dv: String, nombre: String, email: String,
+        fechaNac: String, genero: String, altura: Int, peso: Int,
+        idMedico: Long, pass: String
     ) {
         viewModelScope.launch {
             try {
-                val ok = OracleRemoteDataSource.registrarEnfermedadesPacientePorRut(
-                    rut = rut,
-                    dv = dv,
-                    enfermedadesIds = enfermedadesIds
+                val exito = repository.registrarPacienteRemoto(
+                    rut, dv, nombre, email, fechaNac, genero, altura, peso, idMedico, pass
                 )
-                _enfermedadesOk.value = ok
-            } catch (e: Exception) {
-                Log.e("AuthVM", "Error asociarEnfermedades", e)
-                _enfermedadesOk.value = false
-            }
-        }
-    }
 
-    fun resetEnfermedadesOk() {
-        _enfermedadesOk.value = null
-    }
-
-    // --------------------------------------------------------------------
-    // USER_HEALTH_DATA (POST remoto)
-    // --------------------------------------------------------------------
-    /**
-     * Envía un dato de salud remoto a /v1/gestion/user_health.
-     * Los campos que no uses los pasas como null.
-     */
-    fun crearDatoSaludRemoto(
-        rut: Long,
-        dv: String,
-        presionSistolica: Int?,
-        presionDiastolica: Int?,
-        glucosaSangre: Int?,
-        aguaVasos: Int?,
-        pasos: Int? = null
-    ) {
-        viewModelScope.launch {
-            try {
-                val ok = OracleRemoteDataSource.crearDatoSaludRemoto(
-                    rut = rut,
-                    dv = dv,
-                    presionSistolica = presionSistolica,
-                    presionDiastolica = presionDiastolica,
-                    glucosaSangre = glucosaSangre,
-                    aguaVasos = aguaVasos,
-                    pasos = pasos
-                )
-                _datoSaludOk.value = ok
+                if (exito) {
+                    // Si se registró en nube, guardamos también copia local
+                    val nuevoPaciente = PacienteEntity(
+                        rut = rut, dv = dv, nombre = nombre, correo = email,
+                        fechaNacimiento = fechaNac, genero = genero, altura = altura,
+                        peso = peso, idMedico = idMedico, password = pass
+                    )
+                    repository.insertarPacienteLocal(nuevoPaciente)
+                    _registroResult.postValue(true)
+                } else {
+                    _errorMessage.postValue("No se pudo registrar en el servidor")
+                    _registroResult.postValue(false)
+                }
             } catch (e: Exception) {
-                Log.e("AuthVM", "Error crearDatoSaludRemoto", e)
-                _datoSaludOk.value = false
+                _errorMessage.postValue("Error: ${e.message}")
+                _registroResult.postValue(false)
             }
         }
     }
