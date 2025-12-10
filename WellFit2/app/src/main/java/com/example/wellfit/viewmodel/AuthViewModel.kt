@@ -17,6 +17,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
     fun loginRemoto(correo: String, pass: String) {
         viewModelScope.launch {
+            // Esto ahora usa la versión con Logs
             val res = OracleRemoteDataSource.loginPaciente(correo, pass)
             loginPaciente.postValue(res)
         }
@@ -24,7 +25,6 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
     fun registrarPacienteRemoto(req: PacientePostRequest) {
         viewModelScope.launch {
-            // Asegura que coincida con el nombre en OracleRemoteDataSource
             val ok = OracleRemoteDataSource.crearPacienteRemoto(req)
             registroOk.postValue(ok)
         }
@@ -32,8 +32,13 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
     fun cargarEnfermedadesYObjetivos() {
         viewModelScope.launch {
-            enfermedades.postValue(OracleRemoteDataSource.obtenerEnfermedades())
-            objetivos.postValue(OracleRemoteDataSource.obtenerObjetivos())
+            // Manejamos posibles errores con listas vacías seguras
+            try {
+                enfermedades.postValue(OracleRemoteDataSource.obtenerEnfermedades())
+                objetivos.postValue(OracleRemoteDataSource.obtenerObjetivos())
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 

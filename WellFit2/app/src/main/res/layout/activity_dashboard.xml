@@ -278,6 +278,7 @@
                             android:textSize="16sp" />
 
                         <TextView
+                            android:id="@+id/tvPasosActuales"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="0 hoy"
@@ -353,7 +354,7 @@
                     <ImageView
                         android:layout_width="40dp"
                         android:layout_height="40dp"
-                        android:src="@drawable/ic_ejercicio" />
+                        android:src="@drawable/ic_ejercicio3"/>
 
                     <LinearLayout
                         android:layout_width="wrap_content"

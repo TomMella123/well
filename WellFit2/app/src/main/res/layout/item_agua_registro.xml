@@ -1,25 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
-    android:padding="12dp"
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="#EEEEEE"
-    android:layout_margin="6dp">
+    android:layout_marginHorizontal="20dp"
+    android:layout_marginVertical="8dp"
+    app:cardCornerRadius="25dp"
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="#FFFFFF">
 
-    <TextView
-        android:id="@+id/itemFecha"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:textColor="#000000"
-        android:text="Fecha" />
+        android:orientation="horizontal"
+        android:paddingVertical="15dp"
+        android:paddingHorizontal="25dp"
+        android:gravity="center_vertical">
 
-    <TextView
-        android:id="@+id/itemCantidad"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#000000"
-        android:text="0 vasos" />
+        <TextView
+            android:id="@+id/itemCantidad"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="250 ML"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#000000" />
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/itemFecha"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="HH:mm hrs"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="#888888" />
+
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

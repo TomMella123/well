@@ -6,6 +6,7 @@ import android.text.InputType
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import com.example.wellfit.data.local.UserPrefs
 import com.example.wellfit.databinding.ActivityLoginBinding
 import com.example.wellfit.ui.dashboard.DashboardActivity
 import com.example.wellfit.viewmodel.AuthViewModel
@@ -42,12 +43,11 @@ class LoginActivity : AppCompatActivity() {
             if (correo.isEmpty() || pass.isEmpty()) {
                 Toast.makeText(this, "Completa correo y contraseña", Toast.LENGTH_SHORT).show()
             } else {
-                // Llama al ViewModel que usa OracleRemoteDataSource.loginPaciente(...)
                 authViewModel.loginRemoto(correo, pass)
             }
         }
 
-        // Ir a registro  (OJO: en el XML se llama btnGoRegister)
+        // Ir a registro
         binding.btnGoRegister.setOnClickListener {
             startActivity(Intent(this, com.example.wellfit.ui.register.RegisterActivity::class.java))
         }
@@ -55,6 +55,11 @@ class LoginActivity : AppCompatActivity() {
         // Observa resultado de login
         authViewModel.loginPaciente.observe(this) { paciente ->
             if (paciente != null) {
+                // GUARDAR DATOS DE SESIÓN (ID y NOMBRE)
+                val prefs = UserPrefs(this)
+                paciente.idPaciente?.let { prefs.saveString("idPaciente", it.toString()) }
+                paciente.nombre?.let { prefs.saveString("nombre", it) } // <--- ESTO ES LO NUEVO
+
                 Toast.makeText(this, "Bienvenido ${paciente.nombre}", Toast.LENGTH_SHORT).show()
                 startActivity(Intent(this, DashboardActivity::class.java))
                 finish()

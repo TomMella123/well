@@ -6,17 +6,19 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.wellfit.R
-import com.example.wellfit.data.local.entities.AguaRegistroEntity
 import java.text.SimpleDateFormat
 import java.util.*
 
+// ESTA ES LA ÚNICA DEFINICIÓN DE AguaItem (Resuelve Redeclaration: data class AguaItem : Any)
+data class AguaItem(val cantidad: String, val timestamp: Long)
+
 class HidratacionAdapter(
-    private var items: List<AguaRegistroEntity>
+    private val items: MutableList<AguaItem>
 ) : RecyclerView.Adapter<HidratacionAdapter.AguaViewHolder>() {
 
-    inner class AguaViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val fecha: TextView = view.findViewById(R.id.itemFecha)
-        val cantidad: TextView = view.findViewById(R.id.itemCantidad)
+    class AguaViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val tvCantidad: TextView = view.findViewById(R.id.itemCantidad)
+        val tvFecha: TextView = view.findViewById(R.id.itemFecha)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AguaViewHolder {
@@ -28,17 +30,31 @@ class HidratacionAdapter(
     override fun onBindViewHolder(holder: AguaViewHolder, position: Int) {
         val item = items[position]
 
-        val sdf = SimpleDateFormat("dd/MM HH:mm", Locale.getDefault())
-        val fechaFormateada = sdf.format(Date(item.timestamp))
+        val sdf = SimpleDateFormat("HH:mm 'hrs'", Locale.getDefault())
+        val horaFormateada = sdf.format(Date(item.timestamp))
 
-        holder.fecha.text = fechaFormateada
-        holder.cantidad.text = "${item.ml} ml"
+        holder.tvCantidad.text = item.cantidad
+        holder.tvFecha.text = horaFormateada
     }
 
     override fun getItemCount(): Int = items.size
 
-    fun updateData(newList: List<AguaRegistroEntity>) {
-        items = newList
+    fun agregarItem(nuevo: AguaItem) {
+        items.add(0, nuevo)
+        notifyItemInserted(0)
+    }
+
+    fun eliminarUltimo() {
+        if (items.isNotEmpty()) {
+            items.removeAt(0)
+            notifyItemRemoved(0)
+        }
+    }
+
+    // Función para resolver Unresolved reference 'actualizarLista'
+    fun actualizarLista(nuevosItems: List<AguaItem>) {
+        items.clear()
+        items.addAll(nuevosItems)
         notifyDataSetChanged()
     }
 }

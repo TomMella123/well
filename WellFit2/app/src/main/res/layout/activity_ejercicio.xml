@@ -10,7 +10,8 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="220dp"
-        android:background="#B88BFF">
+        android:backgroundTint="#B88BFF"
+        android:background="@drawable/heador_curves">
 
         <ImageView
             android:id="@+id/imgHeaderEjercicio"
@@ -18,7 +19,7 @@
             android:layout_height="80dp"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="32dp"
-            android:src="@drawable/ic_ejercicio"
+            android:src="@drawable/ic_ejercicio2"
             app:tint="@android:color/white" />
 
         <TextView

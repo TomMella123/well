@@ -1,141 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="#F5F5F5">
+    android:orientation="vertical"
+    android:background="#F9F9F9">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_height="280dp"
+        android:background="@drawable/heador_curves"
+        android:backgroundTint="#C62828">
 
-        <!-- TARJETA ROJA SUPERIOR -->
-        <LinearLayout
-            android:id="@+id/cardPresionTop"
-            android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:background="#C62828"
-            android:gravity="center"
-            android:orientation="vertical">
+        <androidx.cardview.widget.CardView
+            android:id="@+id/circleCard"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:layout_centerInParent="true"
+            app:cardCornerRadius="80dp"
+            app:cardElevation="0dp"
+            app:cardBackgroundColor="#FFFFFF">
 
-            <ImageView
-                android:layout_width="72dp"
-                android:layout_height="72dp"
-                android:src="@drawable/ic_rc"
-                app:tint="#FFFFFF" />
-
-            <TextView
-                android:id="@+id/tvPresionUltima"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0/0 mm/Hg"
-                android:textColor="#FFFFFF"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:layout_marginTop="8dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Última lectura"
-                android:textColor="#FFFFFF" />
-        </LinearLayout>
-
-        <!-- FORMULARIO DE INGRESO -->
-        <TextView
-            android:id="@+id/tvLabelSistolica"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Ingreso de sistólica"
-            android:textSize="14sp"
-            android:textColor="#666666"
-            android:layout_marginTop="24dp" />
-
-        <EditText
-            android:id="@+id/etSistolica"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="00 mm/Hg"
-            android:inputType="number"
-            android:background="@android:color/transparent"
-            android:paddingBottom="4dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="8dp" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#CCCCCC" />
-
-        <TextView
-            android:id="@+id/tvLabelDiastolica"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Ingreso de diastólica"
-            android:textSize="14sp"
-            android:textColor="#666666"
-            android:layout_marginTop="16dp" />
-
-        <EditText
-            android:id="@+id/etDiastolica"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="00 mm/Hg"
-            android:inputType="number"
-            android:background="@android:color/transparent"
-            android:paddingBottom="4dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginBottom="8dp" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#CCCCCC" />
-
-        <Button
-            android:id="@+id/btnIngresarPresion"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Ingresar"
-            android:textColor="@android:color/white"
-            android:backgroundTint="#C62828"
-            android:layout_marginTop="24dp"
-            android:layout_gravity="center_horizontal"
-            android:paddingLeft="32dp"
-            android:paddingRight="32dp" />
-
-        <!-- LISTA DE REGISTROS -->
-        <LinearLayout
-            android:id="@+id/containerHistorialPresion"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="24dp" />
-
-        <!-- TARJETA GRÁFICO SEMANAL (PLACEHOLDER) -->
-        <LinearLayout
-            android:id="@+id/cardGraficoPresion"
-            android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:background="@drawable/card_bg"
-            android:orientation="vertical"
-            android:padding="12dp"
-            android:layout_marginTop="24dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Semanal"
-                android:textStyle="bold"
-                android:layout_gravity="end" />
-
-            <View
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:background="#FFEBEE" />
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/ivHeartAnim"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/ic_heart"
+                    app:tint="#FF5252"
+                    android:layout_marginBottom="5dp"/>
+
+                <TextView
+                    android:id="@+id/tvPresionUltima"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0/0"
+                    android:textSize="28sp"
+                    android:textStyle="bold"
+                    android:textColor="#000000"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="mm/Hg"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    android:textColor="#000000"/>
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Última lectura"
+            android:textColor="#FFFFFF"
+            android:layout_below="@id/circleCard"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
+            android:textSize="14sp"/>
+
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ingreso de sistólica"
+                android:textColor="#D32F2F"
+                android:textSize="14sp" />
+
+            <EditText
+                android:id="@+id/etSistolica"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Ej: 120"
+                android:inputType="number"
+                android:backgroundTint="#AAAAAA" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ingreso de diastólica"
+                android:textColor="#D32F2F"
+                android:textSize="14sp"
+                android:layout_marginTop="15dp"/>
+
+            <EditText
+                android:id="@+id/etDiastolica"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Ej: 80"
+                android:inputType="number"
+                android:backgroundTint="#AAAAAA"/>
+
+            <Button
+                android:id="@+id/btnIngresarPresion"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:text="Ingresar"
+                android:textColor="#FFFFFF"
+                android:background="@drawable/bg_btn_red"
+                android:backgroundTint="#D32F2F"
+                android:layout_gravity="center"
+                android:layout_marginTop="25dp"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvHistorialPresion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:nestedScrollingEnabled="false"/>
+
         </LinearLayout>
-    </LinearLayout>
-</ScrollView>
+    </ScrollView>
+</LinearLayout>
