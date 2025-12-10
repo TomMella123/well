@@ -1,26 +1,10 @@
 package com.example.wellfit.data.repository
 
-import com.example.wellfit.data.local.dao.EjercicioDao
-import com.example.wellfit.data.local.entities.DificultadEntity
-import com.example.wellfit.data.local.entities.EjercicioEntity
+import com.example.wellfit.data.remote.EjercicioRemoto
+import com.example.wellfit.data.remote.OracleRemoteDataSource
 
-class EjercicioRepository(
-    private val ejercicioDao: EjercicioDao
-) {
-
-    // Insertar ejercicio
-    suspend fun insertEjercicio(ejercicio: EjercicioEntity): Long =
-        ejercicioDao.insertEjercicio(ejercicio)
-
-    // Obtener lista de ejercicios
-    suspend fun getEjercicios(): List<EjercicioEntity> =
-        ejercicioDao.getAllEjercicios()
-
-    // Insertar dificultad
-    suspend fun insertDificultad(dificultad: DificultadEntity): Long =
-        ejercicioDao.insertDificultad(dificultad)
-
-    // Obtener dificultades
-    suspend fun getDificultades(): List<DificultadEntity> =
-        ejercicioDao.getAllDificultades()
+class EjercicioRepository {
+    suspend fun obtenerEjercicios(): List<EjercicioRemoto> {
+        return OracleRemoteDataSource.obtenerEjercicios()
+    }
 }

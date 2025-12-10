@@ -1,47 +1,33 @@
 package com.example.wellfit.viewmodel
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.wellfit.data.local.entities.HistorialPesoEntity
-import com.example.wellfit.data.local.entities.UserHealthDataEntity
 import com.example.wellfit.data.repository.SaludRepository
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class SaludViewModel(
-    private val saludRepository: SaludRepository
-) : ViewModel() {
+class SaludViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val _healthData = MutableStateFlow<List<UserHealthDataEntity>>(emptyList())
-    val healthData: StateFlow<List<UserHealthDataEntity>> = _healthData
+    private val repository = SaludRepository()
 
-    private val _historialPeso = MutableStateFlow<List<HistorialPesoEntity>>(emptyList())
-    val historialPeso: StateFlow<List<HistorialPesoEntity>> = _historialPeso
+    private val _operacionExitosa = MutableLiveData<Boolean>()
+    val operacionExitosa: LiveData<Boolean> = _operacionExitosa
 
-    fun registrarIndicadores(data: UserHealthDataEntity) {
+    // Llama a esto desde tus Activities (GlucosaActivity, PresionActivity)
+    // Pasando el ID del paciente logueado (NO el RUT)
+    fun registrarDatosSalud(
+        idPaciente: Long,
+        presionSis: Int? = null,
+        presionDias: Int? = null,
+        glucosa: Int? = null,
+        agua: Int? = null,
+        pasos: Int? = null
+    ) {
         viewModelScope.launch {
-            saludRepository.insertHealthData(data)
-            cargarHealthData(data.idPaciente)
-        }
-    }
-
-    fun registrarPeso(historial: HistorialPesoEntity) {
-        viewModelScope.launch {
-            saludRepository.insertHistorialPeso(historial)
-            cargarHistorialPeso(historial.idPaciente)
-        }
-    }
-
-    fun cargarHealthData(idPaciente: Long) {
-        viewModelScope.launch {
-            _healthData.value = saludRepository.getHealthData(idPaciente)
-        }
-    }
-
-    fun cargarHistorialPeso(idPaciente: Long) {
-        viewModelScope.launch {
-            _historialPeso.value = saludRepository.getHistorialPeso(idPaciente)
+            val exito = repository.subirDatosSalud(idPaciente, presionSis, presionDias, glucosa, agua, pasos)
+            _operacionExitosa.postValue(exito)
         }
     }
 }

@@ -1,33 +1,29 @@
 package com.example.wellfit.viewmodel
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.wellfit.data.local.entities.DesafioEntity
-import com.example.wellfit.data.local.entities.ObjetivoEntity
+import com.example.wellfit.data.remote.DesafioRemoto
 import com.example.wellfit.data.repository.DesafioRepository
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class DesafiosViewModel(
-    private val desafioRepository: DesafioRepository
-) : ViewModel() {
+class DesafiosViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val _desafios = MutableStateFlow<List<DesafioEntity>>(emptyList())
-    val desafios: StateFlow<List<DesafioEntity>> = _desafios
+    private val repository = DesafioRepository()
 
-    private val _objetivos = MutableStateFlow<List<ObjetivoEntity>>(emptyList())
-    val objetivos: StateFlow<List<ObjetivoEntity>> = _objetivos
+    private val _listaDesafios = MutableLiveData<List<DesafioRemoto>>()
+    val listaDesafios: LiveData<List<DesafioRemoto>> = _listaDesafios
+
+    init {
+        cargarDesafios()
+    }
 
     fun cargarDesafios() {
         viewModelScope.launch {
-            _desafios.value = desafioRepository.getAllDesafios()
-        }
-    }
-
-    fun cargarObjetivos(idPaciente: Long) {
-        viewModelScope.launch {
-            _objetivos.value = desafioRepository.getObjetivosByPaciente(idPaciente)
+            val lista = repository.obtenerDesafios()
+            _listaDesafios.postValue(lista)
         }
     }
 }

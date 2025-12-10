@@ -1,33 +1,27 @@
 package com.example.wellfit.viewmodel
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.wellfit.data.local.entities.DificultadEntity
-import com.example.wellfit.data.local.entities.EjercicioEntity
+import com.example.wellfit.data.remote.EjercicioRemoto
 import com.example.wellfit.data.repository.EjercicioRepository
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class EjercicioViewModel(
-    private val ejercicioRepository: EjercicioRepository
-) : ViewModel() {
+class EjercicioViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val _ejercicios = MutableStateFlow<List<EjercicioEntity>>(emptyList())
-    val ejercicios: StateFlow<List<EjercicioEntity>> = _ejercicios
+    private val repository = EjercicioRepository()
+    private val _ejercicios = MutableLiveData<List<EjercicioRemoto>>()
+    val ejercicios: LiveData<List<EjercicioRemoto>> = _ejercicios
 
-    private val _dificultades = MutableStateFlow<List<DificultadEntity>>(emptyList())
-    val dificultades: StateFlow<List<DificultadEntity>> = _dificultades
-
-    fun cargarEjercicios() {
-        viewModelScope.launch {
-            _ejercicios.value = ejercicioRepository.getEjercicios()
-        }
+    init {
+        cargarEjercicios()
     }
 
-    fun cargarDificultades() {
+    private fun cargarEjercicios() {
         viewModelScope.launch {
-            _dificultades.value = ejercicioRepository.getDificultades()
+            _ejercicios.postValue(repository.obtenerEjercicios())
         }
     }
 }

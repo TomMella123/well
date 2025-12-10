@@ -2,60 +2,48 @@ package com.example.wellfit.ui.desafios
 
 import android.os.Bundle
 import android.view.View
-import android.widget.ProgressBar
-import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
+import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.example.wellfit.R
-import com.example.wellfit.data.remote.DesafioRemoto
-import com.example.wellfit.data.remote.OracleRemoteDataSource
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import com.example.wellfit.core.BaseActivity
+import com.example.wellfit.databinding.ActivityDesafiosBinding
+import com.example.wellfit.viewmodel.DesafiosViewModel
 
-class DesafiosActivity : AppCompatActivity() {
+class DesafiosActivity : BaseActivity() {
 
-    private lateinit var rvDesafios: RecyclerView
-    private lateinit var progress: ProgressBar
-    private lateinit var tvEmpty: TextView
-
-    private val adapter = DesafioAdapter()
+    private lateinit var binding: ActivityDesafiosBinding
+    private val viewModel: DesafiosViewModel by viewModels()
+    private lateinit var adapter: DesafioAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_desafios)
+        binding = ActivityDesafiosBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        rvDesafios = findViewById(R.id.rvDesafios)
-        progress = findViewById(R.id.progressDesafios)
-        tvEmpty = findViewById(R.id.tvDesafiosEmpty)
-
-        rvDesafios.layoutManager = LinearLayoutManager(this)
-        rvDesafios.adapter = adapter
-
-        cargarDesafios()
+        setupRecyclerView()
+        setupObservers()
     }
 
-    private fun cargarDesafios() {
-        progress.visibility = View.VISIBLE
-        tvEmpty.visibility = View.GONE
-        rvDesafios.visibility = View.GONE
+    private fun setupRecyclerView() {
+        adapter = DesafioAdapter()
+        binding.rvDesafios.layoutManager = LinearLayoutManager(this)
+        binding.rvDesafios.adapter = adapter
+    }
 
-        CoroutineScope(Dispatchers.IO).launch {
-            val lista: List<DesafioRemoto> = OracleRemoteDataSource.obtenerDesafios()
+    private fun setupObservers() {
+        // Mostrar cargando al inicio
+        binding.progressDesafios.visibility = View.VISIBLE
 
-            withContext(Dispatchers.Main) {
-                progress.visibility = View.GONE
+        viewModel.listaDesafios.observe(this) { lista ->
+            binding.progressDesafios.visibility = View.GONE
 
-                if (lista.isEmpty()) {
-                    tvEmpty.visibility = View.VISIBLE
-                    rvDesafios.visibility = View.GONE
-                } else {
-                    adapter.submitList(lista)
-                    rvDesafios.visibility = View.VISIBLE
-                    tvEmpty.visibility = View.GONE
-                }
+            if (lista.isNotEmpty()) {
+                adapter.actualizarLista(lista)
+                binding.tvDesafiosEmpty.visibility = View.GONE
+                binding.rvDesafios.visibility = View.VISIBLE
+            } else {
+                binding.rvDesafios.visibility = View.GONE
+                binding.tvDesafiosEmpty.visibility = View.VISIBLE
             }
         }
     }

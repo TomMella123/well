@@ -1,29 +1,27 @@
 package com.example.wellfit.viewmodel
 
-import androidx.lifecycle.ViewModel
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.wellfit.data.local.entities.RecetaEntity
+import com.example.wellfit.data.remote.RecetaRemota
 import com.example.wellfit.data.repository.RecetaRepository
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
-class RecetasViewModel(
-    private val recetaRepository: RecetaRepository
-) : ViewModel() {
+class RecetasViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val _recetas = MutableStateFlow<List<RecetaEntity>>(emptyList())
-    val recetas: StateFlow<List<RecetaEntity>> = _recetas
+    private val repository = RecetaRepository()
+    private val _listaRecetas = MutableLiveData<List<RecetaRemota>>()
+    val listaRecetas: LiveData<List<RecetaRemota>> = _listaRecetas
+
+    init {
+        cargarRecetas()
+    }
 
     fun cargarRecetas() {
         viewModelScope.launch {
-            _recetas.value = recetaRepository.getAllRecetas()
-        }
-    }
-
-    fun cargarRecetasPorEnfermedad(idEnfermedad: Long) {
-        viewModelScope.launch {
-            _recetas.value = recetaRepository.getRecetasByEnfermedad(idEnfermedad)
+            _listaRecetas.postValue(repository.obtenerRecetas())
         }
     }
 }
